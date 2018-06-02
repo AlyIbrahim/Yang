@@ -3,7 +3,7 @@ var Element = require("./element");
 var ElementComplex = function (name, category, key) {
     Element.call(this, name, category, key)
     this.keys = [];
-    this.children = new Array();
+    this.children = [];
 }
 
 ElementComplex.prototype = Object.create(Element.prototype);
