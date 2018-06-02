@@ -55,11 +55,7 @@ var helper = {
     }
         var anchors = ["{", "}", "\\[", "\\]", ";", ","]
         var regex;
-
-        // regex = new RegExp("\""+anchors[0]);
-        // refined = refined.replace(regex, "<");
-        // regex = new RegExp("\""+anchors[1]);
-        // refined = refined.replace(regex, ">");
+        
         for (var i = 0; i<anchors.length;i++){
             regex = new RegExp(anchors[i], "g");
             refined = refined.replace(regex, '\n'+ anchors[i].replace(/\\/g, "") + '\n')
@@ -69,13 +65,6 @@ var helper = {
             refined = refined.replace(embededStr + x, embededValues[x])
         }
     }
-        // refined = refined.replace(">", "\"}");
-        // refined = refined.replace("<", "\"{");
-        // var open = inputText.replace(/{/g, '\n{\n');
-        // var close = open.replace(/}/g, '\n}\n');
-        // var open = inputText.replace(/\[/g, '\n[\n');
-        // var close = open.replace(/\]/g, '\n]\n');
-        // var lines = close.replace(/;/g, '\n');
         var splitted = refined.split(/\r?\n/g);
         return splitted;
     },
