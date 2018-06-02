@@ -40,10 +40,43 @@ var helper = {
         }
     },
     RefineAndSplit: function (inputText) {
-        var open = inputText.replace(/{/g, '\n{\n');
-        var close = open.replace(/}/g, '\n}\n');
-        var lines = close.replace(/;/g, '\n');
-        var splitted = lines.split(/\r?\n/g);
+        
+        var refined = inputText
+        var embededStr = "EMBEDEDJSON"
+        var embedregex = new RegExp("\(\"{\)\[\\\\ \":,;_{\\[a-zA-Z0-9\\]}-\]+\(}\"\)","g")
+        var embededValues = refined.match(embedregex);
+        var embededStructure = {};
+        if(embededValues != null){
+        for (var x = 0; x<embededValues.length;x++){
+            embededStructure.key = embededStr + x;
+            embededStructure.value = embededValues[x];
+            refined = refined.replace(embededValues[x],embededStr + x)
+        }
+    }
+        var anchors = ["{", "}", "\\[", "\\]", ";", ","]
+        var regex;
+
+        // regex = new RegExp("\""+anchors[0]);
+        // refined = refined.replace(regex, "<");
+        // regex = new RegExp("\""+anchors[1]);
+        // refined = refined.replace(regex, ">");
+        for (var i = 0; i<anchors.length;i++){
+            regex = new RegExp(anchors[i], "g");
+            refined = refined.replace(regex, '\n'+ anchors[i].replace(/\\/g, "") + '\n')
+        }
+        if(embededValues != null){
+        for (var x = 0; x<embededValues.length;x++){
+            refined = refined.replace(embededStr + x, embededValues[x])
+        }
+    }
+        // refined = refined.replace(">", "\"}");
+        // refined = refined.replace("<", "\"{");
+        // var open = inputText.replace(/{/g, '\n{\n');
+        // var close = open.replace(/}/g, '\n}\n');
+        // var open = inputText.replace(/\[/g, '\n[\n');
+        // var close = open.replace(/\]/g, '\n]\n');
+        // var lines = close.replace(/;/g, '\n');
+        var splitted = refined.split(/\r?\n/g);
         return splitted;
     },
     setKeys: function (keyString) {

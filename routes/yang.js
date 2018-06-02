@@ -4,10 +4,6 @@ var router = express.Router();
 var Helper = require('../Utils/helper');
 var Analyzer = require('../Utils/analyzer');
 
-var Element = require('../Model/element');
-var ElementComplex = require('../Model/elementcomplex');
-
-
 /* GET home page. */
 router.post('/', function (req, res, next) {
     var yang;
@@ -23,7 +19,6 @@ router.post('/', function (req, res, next) {
 
 
     var splitted = Helper.RefineAndSplit(yang)
-    console.log(splitted);
     console.log(Helper.validateYANG(splitted));
     
     console.log("--------------------------START---------------------------")
