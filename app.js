@@ -9,6 +9,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var yang = require('./routes/yang');
 var json = require('./routes/json');
+var xml =  require('./routes/xml');
 
 var app = express();
 
@@ -38,6 +39,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/yang', yang);
 app.use('/json', json);
+app.use('/xml', xml)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

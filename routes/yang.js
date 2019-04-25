@@ -18,7 +18,7 @@ router.post('/', function (req, res, next) {
     }
 
 
-    var splitted = Helper.RefineAndSplit(yang)
+    var splitted = Helper.RefineAndSplitJSON(yang)
     console.log(Helper.validateYANG(splitted));
     
     console.log("--------------------------START---------------------------")

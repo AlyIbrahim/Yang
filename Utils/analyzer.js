@@ -1,4 +1,4 @@
-var Helper = require('../Utils/helper');
+var Helper = require('./helper');
 
 var Element = require("../Model/element")
 var ElementComplex = require("../Model/elementcomplex")
@@ -125,7 +125,7 @@ var Analyzer = {
                         if (pointer.length == 1) {
                             console.log(start.name)
                         }
-                        if ((start.category == "list") && (start.children.length==0)){
+                        if ((start.category == "list") && (start.children.length == 0)) {
                             console.log(start.name)
                             start.category = "leaf-list"
                         }
@@ -140,8 +140,80 @@ var Analyzer = {
         }
         return start;
     },
-    xml: function(linesArray, start){
+    xml: function (linesArray, start) {
+        var openregex = new RegExp("<[\\w_:?-]+>?", "g")
+        var closeregex = new RegExp("(<\\/[a-z_]*>)", "g")
+        var shortcloseregex = new RegExp("[\\/\\?]>", "g")
+        var valueregex = new RegExp("([^\\s>][\\w ;:'.-]+\\w(?=[\\s]*\\<))|^[\\w][\\w _:;\"\'-]*", "g")
+        var attrregex = new RegExp("([\\w-]+=\"[^\"]+\")|([\\w-]+=[0-9.]+)", "g")
+        var name = ""
+        var category = ""
+        var type = ""
+        var value = ""
+        var children = []
+        var attributes = []
+        for (var x = 0; x < linesArray.length; x++) {
+            if (start == undefined) {
+                start = new ElementComplex('Root', 'Root', true);
+            }
+            var line = linesArray[x]
+            // Cature openning tags <tag <tag> <?tag
+            var open = line.match(openregex)
+            if (open != null) {
+                line = line.replace(openregex, "")
+                name = open[0].match(/[A-Za-z0-9_-]+/g)[0]
+                attributes = []
+                value = undefined
+                children = []
+            }
+            // Capture attributes list key=value
 
+            var attributesList = line.match(attrregex)
+            // If the list of attributes is not null, add each attribute as key value pair to attributes
+            if (attributesList != null) {
+                for (var y = 0; y < attributesList.length; y++) {
+                    attr = attributesList[y].split("=")
+                    attributes.push({ 'key': attr[0], 'value': attr[1] })
+                }
+                line = line.replace(attrregex, "")
+            }
+            // Capture if tag value <tag> VALUE </tag>
+            var valuelist = line.match(valueregex)
+            if (valuelist != null) {
+                value = valuelist[0]
+                continue;
+            }
+            // Cature closing tags ?> /> 
+            var shortClose = line.match(shortcloseregex)
+            if (shortClose != null) {
+                var element = new Element(name, category)
+                if (attributes.length > 0) { element.attributes = attributes }
+                start.addChild(element)
+                continue;
+            }
+
+            // Capture complete closing tags </tag>
+            var close = line.match(closeregex)
+            if (close != null) {
+                console.log("Close : " + start.name)
+                var currentStart = start
+                start = pointer.pop()
+                if (!currentStart.hasChildren()) {
+                    var element = new Element(name, category)
+                    element.value = value
+                    element.attributes = attributes
+                    start.removeLastChild()
+                    start.addChild(element)
+                } 
+            } else {
+                var element = new ElementComplex(name, category)
+                if (attributes.length > 0) { element.attributes = attributes }
+                start.addChild(element)
+                pointer.push(start)
+                start = element
+            }
+        }
+        return start
     }
 }
 module.exports = Analyzer

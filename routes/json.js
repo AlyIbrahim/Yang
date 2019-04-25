@@ -8,7 +8,7 @@ var Analyzer = require('../Utils/analyzer');
 router.post('/', function (req, res, next) {
     var json = req.text;
 
-    var splitted = Helper.RefineAndSplit(json);
+    var splitted = Helper.RefineAndSplitJSON(json);
     console.log(splitted);
     var Root = Analyzer.json(splitted);
     // res.send(json);

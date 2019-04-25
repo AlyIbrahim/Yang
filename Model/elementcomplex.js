@@ -21,6 +21,26 @@ ElementComplex.prototype.addChild = function (element) {
     this.children.push(element);
 }
 
+ElementComplex.prototype.removeChild = function(element){
+    for(var i=0;i<this.children.length; i++){
+        if (this.children[i] == element){
+            break;
+        }
+    }
+    this.children.splice(i,1)
+}
+
+ElementComplex.prototype.removeLastChild = function(element){
+    return this.children.splice(this.children.length - 1, 1)
+}
+
+ElementComplex.prototype.hasChildren = function(){
+    if (this.children.length > 0){
+        return true
+    }
+    return false
+}
+
 ElementComplex.prototype.toString = function (level) {
     if(level == undefined){
         level = 0
