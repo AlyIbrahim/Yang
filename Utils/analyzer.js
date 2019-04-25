@@ -186,6 +186,7 @@ var Analyzer = {
             // Cature closing tags ?> /> 
             var shortClose = line.match(shortcloseregex)
             if (shortClose != null) {
+                category = "leaf"
                 var element = new Element(name, category)
                 if (attributes.length > 0) { element.attributes = attributes }
                 start.addChild(element)
@@ -195,19 +196,36 @@ var Analyzer = {
             // Capture complete closing tags </tag>
             var close = line.match(closeregex)
             if (close != null) {
-                console.log("Close : " + start.name)
-                var currentStart = start
+                var initialStart = start
                 start = pointer.pop()
-                if (!currentStart.hasChildren()) {
+                if (!initialStart.hasChildren()) {
                     var element = new Element(name, category)
+                    element.category = "leaf"
                     element.value = value
                     element.attributes = attributes
                     start.removeLastChild()
                     start.addChild(element)
-                } 
+                }
+                var siblingIds = start.hasChildWithName(initialStart.name)
+                if (siblingIds.length > 1) {
+                    var simpleCount = 0
+                    var cat = "list"
+                    for (var z = 0; z < siblingIds.length; z++) {
+                        if(start.children[siblingIds[z]].isSimple()){
+                            simpleCount ++
+                        }
+                    }
+                    if (simpleCount == siblingIds.length){
+                        cat = "leaf-list"
+                    }
+                    for (var z = 0; z < siblingIds.length; z++) {
+                        start.children[siblingIds[z]].category = cat
+                    }
+                }
             } else {
                 var element = new ElementComplex(name, category)
                 if (attributes.length > 0) { element.attributes = attributes }
+                element.category = "object"
                 start.addChild(element)
                 pointer.push(start)
                 start = element

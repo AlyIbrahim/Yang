@@ -38,6 +38,10 @@ Element.prototype.keyCheck = function(key){
     return "NOTKEY" 
 }
 
+Element.prototype.isSimple = function(){
+    return true;
+}
+
 Element.prototype.toString = function(level){
     if(level == undefined){
         level = 0

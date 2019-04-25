@@ -30,14 +30,28 @@ ElementComplex.prototype.removeChild = function(element){
     this.children.splice(i,1)
 }
 
-ElementComplex.prototype.removeLastChild = function(element){
+ElementComplex.prototype.removeLastChild = function(){
     return this.children.splice(this.children.length - 1, 1)
+}
+
+ElementComplex.prototype.hasChildWithName = function(name){
+    var ids = []
+    for(var i=0;i<this.children.length; i++){
+        if (this.children[i].name == name){
+            ids.push(i)
+        }
+    }
+    return ids;
 }
 
 ElementComplex.prototype.hasChildren = function(){
     if (this.children.length > 0){
         return true
     }
+    return false
+}
+
+ElementComplex.prototype.isSimple = function(){
     return false
 }
 
